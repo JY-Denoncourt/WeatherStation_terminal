@@ -10,9 +10,15 @@ namespace WeatherApp.ViewModels
 {
     public class TemperatureViewModel : BaseViewModel
     {
+        #region Variables
         private TemperatureModel currentTemp;
+        private TemperatureModel tempLast;
         private string city;
 
+        #endregion
+
+
+        #region Propriete
         public ITemperatureService TemperatureService { get; private set; }
 
         public DelegateCommand<string> GetTempCommand { get; set; }
@@ -23,6 +29,17 @@ namespace WeatherApp.ViewModels
             set
             {
                 currentTemp = value;
+                OnPropertyChanged();
+                OnPropertyChanged("RawText");
+            }
+        }
+
+        public TemperatureModel TempLast
+        {
+            get => tempLast;
+            set
+            {
+                tempLast = value;
                 OnPropertyChanged();
                 OnPropertyChanged("RawText");
             }
@@ -69,6 +86,10 @@ namespace WeatherApp.ViewModels
             
         }
 
+        #endregion
+
+
+        #region Constructeur
         public TemperatureViewModel()
         {
             Name = this.GetType().Name;
@@ -77,7 +98,10 @@ namespace WeatherApp.ViewModels
             GetTempCommand = new DelegateCommand<string>(GetTemp, CanGetTemp);
         }
 
+        #endregion
 
+
+        #region Methodes Temperature
         public bool CanGetTemp(string obj)
         {
             return TemperatureService != null;
@@ -96,16 +120,32 @@ namespace WeatherApp.ViewModels
 
             if (CurrentTemp != null)
             {
-                /// TODO 01 : Insérer la température à la position 0 de la collection
+                /// TODO 01 : Completed  
+                /// Insérer la température à la position 0 de la collection
                 /// Description détaillée :
-                /// À chaque fois que l'on clique sur le bouton "Get Data". On veut 
-                /// insérer la température à la position 0 de la collection.
-                /// La température n'est insérée que si la date/heure ET la ville de la
-                /// dernière température insérée dans la liste est différente
-                /// que celle que l'on vient de récupérer.
-                /// Utiliser la méthode Insert de la collection
+                /// À chaque fois que l'on clique sur le bouton "Get Data". On veut insérer la température à la position 0 de la collection.
+                /// La température n'est insérée que si la date/heure ET la ville de la dernière température insérée dans la liste est différente
+                /// que celle que l'on vient de récupérer. Utiliser la méthode Insert de la collection
+                if (Temperatures.Count > 0 )
+                {
+                   if((TempLast.City != CurrentTemp.City) && (TempLast.DateTime != CurrentTemp.DateTime)) 
+                    {
+                        //RawText = CurrentTemp.ToString() + Environment.NewLine + RawText;
+                        Temperatures.Add(CurrentTemp);
+                        TempLast = currentTemp;
+                    }
+                }
+                else
+                {
+                    Temperatures.Add(CurrentTemp);
+                    TempLast = currentTemp;
+                }
+                    
 
                 Debug.WriteLine(CurrentTemp);
+
+                /// TODO 01B : Completed  
+
             }
         }
 
@@ -123,5 +163,7 @@ namespace WeatherApp.ViewModels
         {
             TemperatureService = srv;
         }
+
+        #endregion
     }
 }
