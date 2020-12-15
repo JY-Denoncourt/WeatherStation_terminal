@@ -22,6 +22,7 @@ namespace WeatherApp.ViewModels
         private OpenWeatherService ows;
         private string filename;
         private string openFilename;
+        private string saveFilename;
         private string fileContent;
 
         private VistaSaveFileDialog saveFileDialog;
@@ -68,6 +69,18 @@ namespace WeatherApp.ViewModels
             set
             {
                 openFilename = value;
+            }
+        }
+
+        public string SaveFilename
+        {
+            get
+            {
+                return saveFilename;
+            }
+            set
+            {
+                saveFilename = value;
             }
         }
 
@@ -205,7 +218,16 @@ namespace WeatherApp.ViewModels
 
         private void saveToFile()
         {
-            /// TODO 09 : Code pour sauvegarder dans le fichier
+            var resultat = JsonConvert.SerializeObject(tvm.Temperatures, Formatting.Indented);
+
+            using (var tw = new StreamWriter(SaveFilename, false))
+            {
+                tw.WriteLine(resultat);
+                tw.Close();
+            }
+
+            /// TODO 09 : Completed
+            /// Code pour sauvegarder dans le fichier
             /// Voir 
             /// Solution : 14_pratique_examen
             /// Projet : serialization_object
@@ -295,7 +317,14 @@ namespace WeatherApp.ViewModels
                 saveFileDialog.DefaultExt = "json";
             }
 
-            /// TODO 08 : Code pour afficher la boîte de dialogue de sauvegarde
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                SaveFilename = saveFileDialog.FileName;
+                saveToFile();
+            }
+
+            /// TODO 08 : Completed
+            /// Code pour afficher la boîte de dialogue de sauvegarde
             /// Voir
             /// Solution : 14_pratique_examen
             /// Projet : demo_openFolderDialog
@@ -309,16 +338,18 @@ namespace WeatherApp.ViewModels
         }
 
 
-        
         private bool CanExport(string obj)
         {
+            if (tvm.Temperatures != null) return true;
+            else return false;
+
             /// <summary>
-            /// TODO 07 : Méthode CanExport ne retourne vrai que si la collection a du contenu
+            /// TODO 07 : Completed
+            /// Méthode CanExport ne retourne vrai que si la collection a du contenu
             /// </summary>
             /// <param name="obj"></param>
             /// <returns></returns>
             /// 
-            throw new NotImplementedException();
         }
         #endregion
 
