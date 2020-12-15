@@ -1,8 +1,13 @@
-﻿using Ookii.Dialogs.Wpf;
+﻿using Newtonsoft.Json;
+using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using WeatherApp.Commands;
+using WeatherApp.Models;
 using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels
@@ -16,11 +21,15 @@ namespace WeatherApp.ViewModels
         private TemperatureViewModel tvm;
         private OpenWeatherService ows;
         private string filename;
+        private string openFilename;
+        private string fileContent;
 
         private VistaSaveFileDialog saveFileDialog;
         private VistaOpenFileDialog openFileDialog;
 
         #endregion
+
+
 
         #region Propriétés
         /// <summary>
@@ -50,6 +59,29 @@ namespace WeatherApp.ViewModels
             }
         }
 
+        public string OpenFilename
+        {
+            get
+            {
+                return openFilename;
+            }
+            set
+            {
+                openFilename = value;
+            }
+        }
+
+        public string FileContent
+        {
+            get { return fileContent; }
+            set
+            {
+                fileContent = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        
         /// <summary>
         /// Commande pour changer la page à afficher
         /// </summary>
@@ -98,12 +130,9 @@ namespace WeatherApp.ViewModels
             /// TODO 03 : Completed
             /// Instancier ImportCommand qui doit appeler la méthode Import
 
-
             /// TODO 06 : Completed
             /// Instancier ExportCommand qui doit appeler la méthode Export
             /// Ne peut s'exécuter que la méthode CanExport retourne vrai
-
-
 
             /// TODO 13b : Completed
             /// Instancier ChangeLanguageCommand qui doit appeler la méthode ChangeLanguage
@@ -116,7 +145,8 @@ namespace WeatherApp.ViewModels
         #endregion
 
 
-        #region Méthodes
+
+        #region Méthodes Base
         void initViewModels()
         {
             /// TemperatureViewModel setup
@@ -148,7 +178,6 @@ namespace WeatherApp.ViewModels
         }
 
 
-
         private void ChangePage(string pageName)
         {            
             if (CurrentViewModel is ConfigurationViewModel)
@@ -163,20 +192,99 @@ namespace WeatherApp.ViewModels
             CurrentViewModel = ViewModels.FirstOrDefault(x => x.Name == pageName);  
         }
 
-        /// <summary>
-        /// TODO 07 : Méthode CanExport ne retourne vrai que si la collection a du contenu
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        private bool CanExport(string obj)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
+
+
+        #region Methodes File
         /// <summary>
         /// Méthode qui exécute l'exportation
         /// </summary>
         /// <param name="obj"></param>
+
+
+        private void saveToFile()
+        {
+            /// TODO 09 : Code pour sauvegarder dans le fichier
+            /// Voir 
+            /// Solution : 14_pratique_examen
+            /// Projet : serialization_object
+            /// Méthode : serialize_array()
+            /// 
+            /// ---
+            /// Algo
+            /// Initilisation du StreamWriter
+            /// Sérialiser la collection de températures
+            /// Écrire dans le fichier
+            /// Fermer le fichier           
+
+        }
+
+
+        private void openFromFile()
+        {
+            using (var sr = new StreamReader(OpenFilename))
+            {
+                FileContent += sr.ReadToEnd();
+
+                if (FileContent != "")
+                {
+                    tvm.Temperatures = JsonConvert.DeserializeObject<ObservableCollection<TemperatureModel>>(FileContent);
+                    FileContent = "";
+                }
+            }
+
+
+            /// TODO 05 : Completed
+            /// Code pour lire le contenu du fichier
+            /// Voir
+            /// Solution : 14_pratique_examen
+            /// Projet : serialization_object
+            /// Méthode : deserialize_from_file_to_object
+            /// 
+            /// ---
+            /// Algo
+            /// Initilisation du StreamReader
+            /// Lire le contenu du fichier
+            /// Désérialiser dans un liste de TemperatureModel
+            /// Remplacer le contenu de la collection de Temperatures avec la nouvelle liste
+
+        }
+
+        #endregion
+
+
+
+        #region Methodes Import - Export 
+        private void Import(string obj)
+        {
+            if (openFileDialog == null)
+            {
+                openFileDialog = new VistaOpenFileDialog();
+                openFileDialog.Filter = "Json file|*.json|All files|*.*";
+                openFileDialog.DefaultExt = "json";
+            }
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Filename = openFileDialog.FileName;
+                openFromFile();
+            }
+
+            /// TODO 04 : Completed
+            /// Commande d'importation : Code pour afficher la boîte de dialogue
+            /// Voir
+            /// Solution : 14_pratique_examen
+            /// Projet : demo_openFolderDialog
+            /// ---
+            /// Algo
+            /// Si la réponse de la boîte de dialogue est vraie
+            ///   Garder le nom du fichier dans Filename
+            ///   Appeler la méthode openFromFile
+
+        }
+
+
         private void Export(string obj)
         {
 
@@ -200,62 +308,23 @@ namespace WeatherApp.ViewModels
 
         }
 
-        private void saveToFile()
+
+        
+        private bool CanExport(string obj)
         {
-            /// TODO 09 : Code pour sauvegarder dans le fichier
-            /// Voir 
-            /// Solution : 14_pratique_examen
-            /// Projet : serialization_object
-            /// Méthode : serialize_array()
+            /// <summary>
+            /// TODO 07 : Méthode CanExport ne retourne vrai que si la collection a du contenu
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
             /// 
-            /// ---
-            /// Algo
-            /// Initilisation du StreamWriter
-            /// Sérialiser la collection de températures
-            /// Écrire dans le fichier
-            /// Fermer le fichier           
-
+            throw new NotImplementedException();
         }
+        #endregion
 
-        private void openFromFile()
-        {
 
-            /// TODO 05 : Code pour lire le contenu du fichier
-            /// Voir
-            /// Solution : 14_pratique_examen
-            /// Projet : serialization_object
-            /// Méthode : deserialize_from_file_to_object
-            /// 
-            /// ---
-            /// Algo
-            /// Initilisation du StreamReader
-            /// Lire le contenu du fichier
-            /// Désérialiser dans un liste de TemperatureModel
-            /// Remplacer le contenu de la collection de Temperatures avec la nouvelle liste
 
-        }
-
-        private void Import(string obj)
-        {
-            if (openFileDialog == null)
-            {
-                openFileDialog = new VistaOpenFileDialog();
-                openFileDialog.Filter = "Json file|*.json|All files|*.*";
-                openFileDialog.DefaultExt = "json";
-            }
-
-            /// TODO 04 : Commande d'importation : Code pour afficher la boîte de dialogue
-            /// Voir
-            /// Solution : 14_pratique_examen
-            /// Projet : demo_openFolderDialog
-            /// ---
-            /// Algo
-            /// Si la réponse de la boîte de dialogue est vraie
-            ///   Garder le nom du fichier dans Filename
-            ///   Appeler la méthode openFromFile
-
-        }
-
+        #region Internationalisation
         private void ChangeLanguage (string language)
         {
             /// TODO 13c : Compléter la méthode pour permettre de changer la langue
