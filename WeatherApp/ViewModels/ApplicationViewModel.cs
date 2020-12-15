@@ -3,6 +3,7 @@ using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -361,9 +362,46 @@ namespace WeatherApp.ViewModels
         #region Internationalisation
         private void ChangeLanguage (string language)
         {
-            /// TODO 13c : Compléter la méthode pour permettre de changer la langue
+            MessageBoxResult result = MessageBox.Show($"{ Properties.Resources.msg_restart}", $"{ Properties.Resources.wn_warning}", MessageBoxButton.YesNoCancel);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    Properties.Settings.Default.Language = language;
+                    Properties.Settings.Default.Save();
+                    Restart();
+                    break;
+
+                case MessageBoxResult.No:
+                    MessageBox.Show($"You will have to Restart later");
+                    Properties.Settings.Default.Language = language;
+                    Properties.Settings.Default.Save();
+                    break;
+
+                case MessageBoxResult.Cancel:
+                    MessageBox.Show("Never Mind");
+                    break;
+            }
+
+
+
+            /// TODO 13c : Completed
+            /// Compléter la méthode pour permettre de changer la langue
             /// Ne pas oublier de demander à l'utilisateur de redémarrer l'application
             /// Aide : ApiConsumerDemo
+            
+            /// TODO 14 : 
+            /// Ajouter dans la vue de l’application le menu « Langues » avec les items
+            ///« Français » et « English » qui devront être liés à la commande « ChangeLanguageCommand »
+
+
+        }
+
+        void Restart()
+        {
+            var filename = Application.ResourceAssembly.Location;
+            var newFile = Path.ChangeExtension(filename, ".exe");
+            Process.Start(newFile);
+            Application.Current.Shutdown();
         }
 
         #endregion
