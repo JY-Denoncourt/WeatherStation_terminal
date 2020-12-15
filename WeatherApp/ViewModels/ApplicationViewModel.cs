@@ -55,8 +55,9 @@ namespace WeatherApp.ViewModels
         /// </summary>
         public DelegateCommand<string> ChangePageCommand { get; set; }
         public DelegateCommand<string> ImportCommand { get; set; }
-
         public DelegateCommand<string> ExportCommand { get; set; }
+        public DelegateCommand<string> ChangeLanguageCommand { get; set; }
+        
         /// <summary>
         /// TODO 02 : Completed
         /// Ajouter ImportCommand
@@ -68,7 +69,8 @@ namespace WeatherApp.ViewModels
         /// </summary>
 
         /// <summary>
-        /// TODO 13a : Ajouter ChangeLanguageCommand
+        /// TODO 13a : Completed
+        /// Ajouter ChangeLanguageCommand
         /// </summary>
 
 
@@ -89,13 +91,22 @@ namespace WeatherApp.ViewModels
         public ApplicationViewModel()
         {
             ChangePageCommand = new DelegateCommand<string>(ChangePage);
+            ImportCommand = new DelegateCommand<string>(Import);
+            ExportCommand = new DelegateCommand<string>(Export, CanExport);
+            ChangeLanguageCommand = new DelegateCommand<string>(ChangeLanguage);
+            
+            /// TODO 03 : Completed
+            /// Instancier ImportCommand qui doit appeler la méthode Import
 
-            /// TODO 06 : Instancier ExportCommand qui doit appeler la méthode Export
+
+            /// TODO 06 : Completed
+            /// Instancier ExportCommand qui doit appeler la méthode Export
             /// Ne peut s'exécuter que la méthode CanExport retourne vrai
 
-            /// TODO 03 : Instancier ImportCommand qui doit appeler la méthode Import
 
-            /// TODO 13b : Instancier ChangeLanguageCommand qui doit appeler la méthode ChangeLanguage
+
+            /// TODO 13b : Completed
+            /// Instancier ChangeLanguageCommand qui doit appeler la méthode ChangeLanguage
 
             initViewModels();          
 
