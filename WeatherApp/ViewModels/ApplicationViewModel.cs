@@ -54,13 +54,17 @@ namespace WeatherApp.ViewModels
         /// Commande pour changer la page à afficher
         /// </summary>
         public DelegateCommand<string> ChangePageCommand { get; set; }
+        public DelegateCommand<string> ImportCommand { get; set; }
 
+        public DelegateCommand<string> ExportCommand { get; set; }
         /// <summary>
-        /// TODO 02 : Ajouter ImportCommand
+        /// TODO 02 : Completed
+        /// Ajouter ImportCommand
         /// </summary>
 
         /// <summary>
-        /// TODO 02 : Ajouter ExportCommand
+        /// TODO 02 : Completed
+        /// Ajouter ExportCommand
         /// </summary>
 
         /// <summary>
@@ -76,8 +80,12 @@ namespace WeatherApp.ViewModels
                 return viewModels; 
             }
         }
+
         #endregion
 
+
+
+        #region Constructeur
         public ApplicationViewModel()
         {
             ChangePageCommand = new DelegateCommand<string>(ChangePage);
@@ -94,6 +102,8 @@ namespace WeatherApp.ViewModels
             CurrentViewModel = ViewModels[0];
 
         }
+        #endregion
+
 
         #region Méthodes
         void initViewModels()
