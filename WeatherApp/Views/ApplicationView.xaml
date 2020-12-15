@@ -9,12 +9,15 @@
         mc:Ignorable="d"
         Title="My Weather Station" Height="450" Width="400">
     <Window.Resources>
+        
         <DataTemplate DataType="{x:Type models:TemperatureViewModel}">
             <views:TemperatureView/>
         </DataTemplate>
+        
         <DataTemplate DataType="{x:Type models:ConfigurationViewModel}">
             <views:ConfigurationView/>
         </DataTemplate>
+       
         <Style x:Key="allMargins">
             <Setter Property="Control.Margin" Value="3"/>
         </Style>
@@ -22,6 +25,8 @@
         <Style BasedOn="{StaticResource allMargins}" TargetType="{x:Type TextBlock}"/>
         <Style BasedOn="{StaticResource allMargins}" TargetType="{x:Type TextBox}"/>
     </Window.Resources>
+    
+    
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -29,6 +34,10 @@
                 <MenuItem Header="Preferences..." Command="{Binding ChangePageCommand}" CommandParameter="ConfigurationViewModel"/>
                 <Separator />
                 <!-- TODO 10 : Ajouter Importer et exporter -->
+                <!-- {x:Static p:Resources.mi_export}  {x:Static p:Resources.mi_import} -->
+                <MenuItem Header="Export" Command="{Binding ExportCommand}" CommandParameter="ConfigurationViewModel"/>
+                <MenuItem Header="Import" Command="{Binding ImportCommand}" CommandParameter="ConfigurationViewModel"/>
+                
             </MenuItem>
         </Menu>
         <ContentControl Content="{Binding CurrentViewModel}"/>

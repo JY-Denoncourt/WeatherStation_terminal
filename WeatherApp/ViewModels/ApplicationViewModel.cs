@@ -14,6 +14,9 @@ namespace WeatherApp.ViewModels
 {
     public class ApplicationViewModel : BaseViewModel
     {
+        ///TODO 10 : Completed
+        ///Ajouter Importer et exporter au menu d<applicationview
+
         #region Membres
 
         private BaseViewModel currentViewModel;
@@ -289,7 +292,7 @@ namespace WeatherApp.ViewModels
 
             if (openFileDialog.ShowDialog() == true)
             {
-                Filename = openFileDialog.FileName;
+                OpenFilename = openFileDialog.FileName;
                 openFromFile();
             }
 
